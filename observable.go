@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-// event key uset to listen and remove all the events
+// ALL_EVENTS_NAMESPACE event key uset to listen and remove all the events
 const ALL_EVENTS_NAMESPACE = "*"
 
 // Structs
@@ -18,7 +18,7 @@ type callback struct {
 	wasCalled bool
 }
 
-// Public Observable struct
+// Observable struct
 type Observable struct {
 	Callbacks map[string][]callback
 	*sync.RWMutex
