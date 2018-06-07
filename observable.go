@@ -63,7 +63,9 @@ func (o *Observable) Trigger(event string, params ...interface{}) *Observable {
 // Off - stop listening a particular event
 func (o *Observable) Off(event string, args ...interface{}) *Observable {
 
-	if len(args) == 1 {
+	if len(args) == 0 {
+		o.removeEvent(event, nil)
+	} else if len(args) == 1 {
 		o.removeEvent(event, args[0])
 	} else {
 		panic("Multiple off callbacks are not supported")
