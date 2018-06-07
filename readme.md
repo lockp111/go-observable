@@ -10,7 +10,7 @@ It allows you to send and receive events with a tiny simple API (thread safe)
 ## Installation
 
 ```go
-go get github.com/GianlucaGuarini/go-observable
+go get github.com/lockp111/go-observable
 ```
 
 ## Api
