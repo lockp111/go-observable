@@ -63,13 +63,11 @@ func (o *Observable) Trigger(event string, params ...interface{}) *Observable {
 // Off - stop listening a particular event
 func (o *Observable) Off(event string, args ...interface{}) *Observable {
 
-	if len(args) == 0 {
+	if event == ALL_EVENTS_NAMESPACE {
 		// wipe all the event listeners
-		if event == ALL_EVENTS_NAMESPACE {
-			o.Lock()
-			o.Callbacks = make(map[string][]callback)
-			o.Unlock()
-		}
+		o.Lock()
+		o.Callbacks = make(map[string][]callback)
+		o.Unlock()
 	} else if len(args) == 1 {
 		o.removeEvent(event, args[0])
 	} else {

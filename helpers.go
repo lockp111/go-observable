@@ -9,13 +9,16 @@ import (
 
 // Add a callback under a certain event namespace
 func (o *Observable) addCallback(event string, cb interface{}, isUnique bool) *Observable {
+	// lock the struct
+	o.Lock()
+	defer o.Unlock()
 
 	fn := reflect.ValueOf(cb)
 	events := strings.Fields(event)
 	isTyped := len(events) > 1
 
 	for _, s := range events {
-		o.Lock()
+		// o.Lock()
 		// does this namespace already exist?
 		if !o.hasEvent(s) {
 			o.Callbacks[s] = make([]callback, 1)
@@ -23,7 +26,7 @@ func (o *Observable) addCallback(event string, cb interface{}, isUnique bool) *O
 		} else {
 			o.Callbacks[s] = append(o.Callbacks[s], callback{fn, isUnique, isTyped, false})
 		}
-		o.Unlock()
+		// o.Unlock()
 	}
 
 	return o
@@ -31,13 +34,21 @@ func (o *Observable) addCallback(event string, cb interface{}, isUnique bool) *O
 
 // remove the events bound to the callback
 func (o *Observable) removeEvent(event string, fn interface{}) {
+	// lock the struct
+	o.Lock()
+	defer o.Unlock()
 
 	events := strings.Fields(event)
 	// try to get the value of the function we want unsubscribe
 	fn = reflect.ValueOf(fn)
 
 	for _, s := range events {
-		o.Lock()
+		// o.Lock()
+		if s == ALL_EVENTS_NAMESPACE {
+			// wipe all the event listeners
+			o.Callbacks = make(map[string][]callback)
+			return
+		}
 		if o.hasEvent(s) {
 			// loop all the callbacks registered under the event namespace
 			for i, cb := range o.Callbacks[s] {
@@ -51,7 +62,7 @@ func (o *Observable) removeEvent(event string, fn interface{}) {
 				delete(o.Callbacks, s)
 			}
 		}
-		o.Unlock()
+		// o.Unlock()
 	}
 
 }
@@ -84,7 +95,7 @@ func (o *Observable) dispatchEvent(event string, arguments []reflect.Value) *Obs
 				}
 				// kill the callbacks registered with one
 				if cb.isUnique {
-					o.Off(s, o.Callbacks[s][i])
+					go o.removeEvent(s, o.Callbacks[s][i])
 				}
 
 				o.Callbacks[s][i].wasCalled = true
