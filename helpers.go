@@ -40,7 +40,10 @@ func (o *Observable) removeEvent(event string, fn interface{}) {
 
 	events := strings.Fields(event)
 	// try to get the value of the function we want unsubscribe
-	fn = reflect.ValueOf(fn)
+	var n reflect.Value
+	if fn != nil {
+		n = reflect.ValueOf(fn)
+	}
 
 	for _, s := range events {
 		// o.Lock()
@@ -49,10 +52,10 @@ func (o *Observable) removeEvent(event string, fn interface{}) {
 			o.Callbacks = make(map[string][]callback)
 			return
 		}
-		if o.hasEvent(s) {
+		if o.hasEvent(s) && fn != nil {
 			// loop all the callbacks registered under the event namespace
 			for i, cb := range o.Callbacks[s] {
-				if fn == cb.fn {
+				if n == cb.fn {
 					o.Callbacks[s] = append(o.Callbacks[s][:i], o.Callbacks[s][i+1:]...)
 				}
 			}
