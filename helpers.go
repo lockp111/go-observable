@@ -59,8 +59,8 @@ func (o *Observable) removeEvent(event string, fn interface{}) {
 // dispatch the events using custom arguments
 func (o *Observable) dispatchEvent(event string, arguments []reflect.Value) *Observable {
 	// lock the struct
-	o.Lock()
-	defer o.Unlock()
+	o.RLock()
+	defer o.RUnlock()
 
 	// get all the list of events space separated
 	events := strings.Fields(event)
