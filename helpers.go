@@ -69,7 +69,7 @@ func (o *Observable) dispatchEvent(s string, arguments []reflect.Value) *Observa
 		// loop all the callbacks
 		// avoiding to call twice the ones registered with Observable.One
 		for i, cb := range o.Callbacks[s] {
-			if !cb.isUnique || cb.isUnique && !cb.wasCalled {
+			if !cb.isUnique || (cb.isUnique && !cb.wasCalled) {
 				// if the callback was registered with multiple events
 				// we prepend the event namespace to the function arguments
 				if cb.isTyped {
@@ -81,7 +81,7 @@ func (o *Observable) dispatchEvent(s string, arguments []reflect.Value) *Observa
 
 			o.Callbacks[s][i].wasCalled = true
 			if cb.isUnique {
-				o.remove(s, cb.fn)
+				go o.removeEvent(s, cb.fn)
 			}
 		}
 	}
