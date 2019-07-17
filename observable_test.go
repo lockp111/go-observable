@@ -1,15 +1,13 @@
-package observable_test
+package observable
 
 import (
 	"sync"
 	"testing"
-
-	observable "github.com/lockp111/go-observable"
 )
 
 func TestOn(t *testing.T) {
 
-	o := observable.New()
+	o := New()
 	n := 0
 
 	o.On("foo", func() {
@@ -29,7 +27,7 @@ func TestOn(t *testing.T) {
 }
 
 func TestOnTriggerMultipleEvensString(t *testing.T) {
-	o := observable.New()
+	o := New()
 	n := 0
 
 	var lastEvt string
@@ -51,7 +49,7 @@ func TestOnTriggerMultipleEvensString(t *testing.T) {
 }
 
 func TestOffMultipleEvensString(t *testing.T) {
-	o := observable.New()
+	o := New()
 	n := 0
 
 	increment := func() {
@@ -71,7 +69,7 @@ func TestOffMultipleEvensString(t *testing.T) {
 }
 
 func TestOnAll(t *testing.T) {
-	o := observable.New()
+	o := New()
 	n := 0
 	var lastEvt string
 
@@ -99,7 +97,7 @@ func TestOnAll(t *testing.T) {
 }
 
 func TestOffAll(t *testing.T) {
-	o := observable.New()
+	o := New()
 	n := 0
 
 	o.On("foo", func() {
@@ -120,7 +118,7 @@ func TestOffAll(t *testing.T) {
 }
 
 func TestOff(t *testing.T) {
-	o := observable.New()
+	o := New()
 	n := 0
 
 	onFoo1 := func() {
@@ -145,7 +143,7 @@ func TestOff(t *testing.T) {
 
 func TestRace(t *testing.T) {
 
-	o := observable.New()
+	o := New()
 	n := 0
 
 	asyncTask := func(wg *sync.WaitGroup) {
@@ -175,7 +173,7 @@ func TestRace(t *testing.T) {
 }
 
 func TestOne(t *testing.T) {
-	o := observable.New()
+	o := New()
 	n := 0
 
 	onFoo := func() {
@@ -193,7 +191,7 @@ func TestOne(t *testing.T) {
 }
 
 func TestArguments(t *testing.T) {
-	o := observable.New()
+	o := New()
 	n := 0
 	o.On("foo", func(arg1 bool, arg2 string) {
 		n++
@@ -210,7 +208,7 @@ func TestArguments(t *testing.T) {
 }
 
 func TestTrigger(t *testing.T) {
-	o := observable.New()
+	o := New()
 	// the trigger without any listener should not throw errors
 	o.Trigger("foo")
 }
@@ -222,7 +220,7 @@ func TestTrigger(t *testing.T) {
 var eventsList = []string{"foo", "bar", "baz", "boo"}
 
 func BenchmarkOnTrigger(b *testing.B) {
-	o := observable.New()
+	o := New()
 	n := 0
 
 	for _, e := range eventsList {
